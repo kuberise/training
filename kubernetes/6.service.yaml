@@ -1,0 +1,141 @@
+# 1. ClusterIP Service (Default type)
+# This service exposes a set of pods internally within the cluster
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: backend
+    tier: api
+---
+# 2. NodePort Service
+# Exposes the service on each Node's IP at a static port
+apiVersion: v1
+kind: Service
+metadata:
+  name: game-service
+spec:
+  type: NodePort
+  ports:
+    - port: 80         # Service port
+      targetPort: 3000 # Container port
+      nodePort: 30007  # Port on node (30000-32767)
+  selector:
+    app: game
+    tier: frontend
+---
+# 3. LoadBalancer Service
+# Exposes the service externally using a cloud provider's load balancer
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb  # Using Network Load Balancer in AWS
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: web
+    env: prod
+---
+# 4. ExternalName Service
+# Maps the service to an external DNS name
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-database
+spec:
+  type: ExternalName
+  externalName: rds.example.com
+---
+# 5. Headless Service
+# Used for direct Pod-to-Pod communication
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-headless
+spec:
+  clusterIP: None  # Makes it headless
+  ports:
+    - port: 27017
+  selector:
+    app: mongodb
+---
+# 6. Service without selector
+# Manually map to specific endpoints
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+---
+# Corresponding Endpoints resource for the service without selector
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: external-service  # Must match service name
+subsets:
+  - addresses:
+      - ip: "192.168.1.100"  # External IP
+      - ip: "192.168.1.101"  # External IP
+    ports:
+      - port: 80
+# check the description of the service and you should see the endpoints
+---
+# 7. Multi-port Service
+# Service exposing multiple ports
+apiVersion: v1
+kind: Service
+metadata:
+  name: multi-port-service
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+    - name: https
+      port: 443
+      targetPort: 8443
+    - name: metrics
+      port: 9090
+      targetPort: 9090
+  selector:
+    app: multi-port-app
+
+# To create the service from the file:
+# kubectl apply -f 06.service.yaml
+#
+# To create a service imperatively:
+# kubectl expose deployment nginx-deployment --port=80 --target-port=80 --type=ClusterIP
+#
+# To list all services:
+# kubectl get services
+#
+# To get detailed information about the service:
+# kubectl describe service nginx-deployment
+#
+# To delete the service:
+# kubectl delete service nginx-deployment
+#
+# To get service details in yaml format:
+# kubectl get service nginx-deployment -o yaml
+#
+# To edit the service configuration:
+# kubectl edit service nginx-deployment
+#
+# To check service endpoints:
+# kubectl get endpoints nginx-deployment
+#
+# To get service status with more details:
+# kubectl get service nginx-deployment -o wide
