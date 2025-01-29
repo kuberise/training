@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpu-app
+  labels:
+    app: gpu-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: gpu-app
+  template:
+    metadata:
+      labels:
+        app: gpu-app
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: gpu
+                operator: Exists
+      containers:
+      - name: gpu-container
+        image: nginx
+        ports:
+        - containerPort: 80
+        resources: {}
+      tolerations:
+        - key: "model"
+          operator: "Equal"
+          value: "hpc"
+          effect: "NoSchedule"
+
+# create a minikube cluster with two nodes or more `minikube start -p demo --nodes 2`
+# add a taint to one of the nodes `kubectl taint node demo-m02 model=hpc:NoSchedule`
+# apply this deployment and check the pods are scheduled on the node with the taint
+# apply another deployment without the toleration and check the node that pods are scheduled
