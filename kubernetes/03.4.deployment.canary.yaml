@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: kuberise
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: nginx
+      track: stable
+  template:
+    metadata:
+      labels:
+        app: nginx
+        track: stable
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.26
+        ports:
+        - containerPort: 80
+        resources: {}
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          echo "<html><body><h1>Hello from Pod: ${HOSTNAME} (v 1.26) </h1></body></html>" > /usr/share/nginx/html/index.html &&
+          nginx -g "daemon off;"
+      volumes:
+      - name: html-volume
+        emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-canary
+  namespace: kuberise
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+      track: canary
+  template:
+    metadata:
+      labels:
+        app: nginx
+        track: canary
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.27
+        ports:
+        - containerPort: 80
+        resources: {}
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          echo "<html><body><h1>Hello from Pod: ${HOSTNAME} (v 1.27) </h1></body></html>" > /usr/share/nginx/html/index.html &&
+          nginx -g "daemon off;"
+      volumes:
+      - name: html-volume
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-deployment
+  namespace: kuberise
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-deployment
+  namespace: kuberise
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx-external
+  rules:
+  - host: nginx.onprem.kuberise.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-deployment
+            port:
+              number: 80
+
+# https://nginx.onprem.kuberise.dev/

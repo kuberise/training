@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+
+# To create the pod from the file:
+# kubectl apply -f 01.pod.yaml
+#
+# To run a pod with a specific image:
+# kubectl run nginx-pod --image=nginx:latest
+#
+# To expose a pod as a service:
+# kubectl expose pod nginx-pod --port=80 --target-port=80
+#
+# To get logs from a pod:
+# kubectl logs nginx-pod
+#
+# To get detailed information about a resource:
+# kubectl describe pod nginx-pod
+#
+# To delete a resource:
+# kubectl delete pod nginx-pod
+#
+# To get the status of resources:
+# kubectl get pod -o wide
+#
+# To execute a command in a running pod:
+# kubectl exec -it nginx-pod -- env

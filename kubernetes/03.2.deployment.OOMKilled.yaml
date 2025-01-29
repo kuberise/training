@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "4Mi"
+            cpu: "250m"
+          limits:
+            memory: "8Mi"
+            cpu: "500m"
+
+# prometheus metric: kube_pod_container_status_last_terminated_reason{namespace="kuberise", reason="OOMKilled"}
