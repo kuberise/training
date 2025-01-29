@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpu-app
+  labels:
+    app: gpu-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: gpu-app
+  template:
+    metadata:
+      labels:
+        app: gpu-app
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: gpu
+                operator: Exists
+      containers:
+      - name: gpu-container
+        image: nginx
+        ports:
+        - containerPort: 80
+        resources: {}
+
+# create a minikube cluster with two nodes or more `minikube start -p demo --nodes 2`
+# apply this deployment without affinity and check the pods are scheduled on both nodes
+# apply this deployment with affinity and check the pods are pending because no nodes have the label `gpu`
+# apply the label to one of the nodes `kubectl label node demo-m02 gpu=true` and check the pods are scheduled on that node
+# now you should use taint and toleration to avoid other pods to be scheduled on that node, because it's a GPU node and should be reserved only for pods that needs GPU

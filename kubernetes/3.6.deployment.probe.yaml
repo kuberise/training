@@ -1,0 +1,154 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+  labels:
+    app: web-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - name: web-app
+        image: nginx:1.27
+        resources: {}
+        ports:
+        - containerPort: 80
+
+        # Mount nginx configuration
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+
+        # Liveness Probe - Checks if the container is running properly
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 5   # Wait before first probe
+          periodSeconds: 5         # How often to probe
+          timeoutSeconds: 3        # Timeout for probe
+          failureThreshold: 3      # Number of failures before restart
+
+        # Readiness Probe - Checks if the container is ready to serve traffic
+        # Runs throughout the pod's entire lifecycle
+        # Controls whether the pod's IP is added to or removed from Service endpoints
+        # Temporary failures don't cause pod restart, just removal from the service endpoints list
+        # Example use case: Checking if an application can accept new connections or if dependent services are available
+        # Only after startup succeeds will the readiness probe begin checking
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          successThreshold: 1
+          failureThreshold: 3
+
+        # Startup Probe - Gives application time to startup (Other probes are disabled until startup succeeds)
+        startupProbe:
+          httpGet:
+            path: /startup
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 30     # Allow up to 5 minutes (30 * 10s)
+
+      # Add volume for nginx configuration
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-config
+---
+# ConfigMap for probe endpoints
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |
+    events {}
+    http {
+      server {
+        listen 80;
+
+        # Health check endpoint
+        location /health {
+          access_log off;
+          return 200 'healthy\n';
+        }
+
+        # Readiness check endpoint
+        location /ready {
+          access_log off;
+          return 200 'ready\n';
+        }
+
+        # Startup check endpoint
+        location /startup {
+          access_log off;
+          return 200 'started\n';
+        }
+
+        # Main application
+        location / {
+          return 200 'Welcome to the probe demo!\n';
+        }
+      }
+    }
+---
+# Service to expose the web-app deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-app-service
+  labels:
+    app: web-app
+spec:
+  selector:
+    app: web-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+# Ingress to route traffic to the web-app service
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-app-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx-external
+  rules:
+  - host: webapp.onprem.kuberise.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web-app-service
+            port:
+              number: 80
+
+
+# check webapp.onprem.kuberise.dev
+# check webapp.onprem.kuberise.dev/health
+# check webapp.onprem.kuberise.dev/ready
+# check webapp.onprem.kuberise.dev/startup
+
+# change return code of /health to 500
+# delete one of the pods, and wait for the new pod to be ready  (this pod will have the new configuration)
+# after few seconds that pod will restart because readiness probe will fail
+# check the endpoint
