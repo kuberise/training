@@ -1,0 +1,90 @@
+---
+# Example 1: Creating a Namespace
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: development
+#   labels:
+#     environment: dev
+#     team: backend
+#   annotations:
+#     description: "Namespace for development environment"
+#     contact: "dev-team@example.com"
+
+---
+# Example 2: Resource Quota for a Namespace
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: dev-resource-quota
+  namespace: development
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: "4Gi"
+    limits.cpu: "4"
+    limits.memory: "8Gi"
+    pods: "10"
+    services: "5"
+    configmaps: "20"
+    persistentvolumeclaims: "5"
+
+---
+# Example 4: Deploying a Pod with Labels and Annotations
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sample-pod
+  namespace: development
+  labels:
+    app: sample-app
+    tier: frontend
+  annotations:
+    build-version: "1.2.3"
+    owner: "john-doe"
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:1.19
+      resources:
+        requests:
+          cpu: "0.5"
+          memory: "512Mi"
+        limits:
+          cpu: "1"
+          memory: "1Gi"
+
+---
+
+# To create the namespace from the file:
+# kubectl apply -f 15.namespace.yaml
+#
+# To create a namespace imperatively:
+# kubectl create namespace development
+#
+# To list all namespaces:
+# kubectl get namespaces
+#
+# To get detailed information about the namespace:
+# kubectl describe namespace development
+#
+# To delete the namespace:
+# kubectl delete namespace development
+#
+# To get namespace in yaml format:
+# kubectl get namespace development -o yaml
+#
+# To edit the namespace:
+# kubectl edit namespace development
+#
+# To set the current namespace for kubectl:
+# kubectl config set-context --current --namespace=development
+#
+# To view current namespace:
+# kubectl config view --minify | grep namespace:
+#
+# To get resource quotas in a namespace:
+# kubectl get resourcequota -n development
+#
+# To get all resources in a namespace:
+# kubectl get all -n development
