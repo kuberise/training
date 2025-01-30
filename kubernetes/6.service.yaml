@@ -12,6 +12,8 @@ spec:
   selector:
     app: backend
     tier: api
+# the same namespace: curl http://backend-service
+# different namespace: curl http://backend-service.kuberise.svc.cluster.local
 ---
 # 2. NodePort Service
 # Exposes the service on each Node's IP at a static port
@@ -114,7 +116,7 @@ spec:
     app: multi-port-app
 
 # To create the service from the file:
-# kubectl apply -f 06.service.yaml
+# kubectl apply -f 6.service.yaml
 #
 # To create a service imperatively:
 # kubectl expose deployment nginx-deployment --port=80 --target-port=80 --type=ClusterIP

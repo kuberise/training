@@ -58,7 +58,7 @@ spec:
           httpGet:
             path: /startup
             port: 80
-          initialDelaySeconds: 15
+          initialDelaySeconds: 5
           periodSeconds: 10
           timeoutSeconds: 3
           failureThreshold: 30     # Allow up to 5 minutes (30 * 10s)

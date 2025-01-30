@@ -83,7 +83,7 @@ spec:
 
 
 # To create the configmap from the file:
-# kubectl apply -f 09.configmap.yaml
+# kubectl apply -f 9.configmap.yaml
 #
 # To create a configmap imperatively from literal values:
 # kubectl create configmap nginx-config --from-literal=app.name=myapp --from-literal=app.environment=development

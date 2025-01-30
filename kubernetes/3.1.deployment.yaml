@@ -77,7 +77,7 @@ spec:
 # https://nginx.onprem.kuberise.dev/
 #
 # To create the deployment from the file:
-# kubectl apply -f 03.deployment.yaml
+# kubectl apply -f 3.1.deployment.yaml
 #
 # To create a deployment imperatively:
 # kubectl create deployment nginx-deployment --image=nginx:latest --replicas=3

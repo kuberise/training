@@ -1,5 +1,5 @@
 ---
-# Example 1: Creating a Namespace
+# # Example 1: Creating a Namespace
 # apiVersion: v1
 # kind: Namespace
 # metadata:
