@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-html
+data:
+  index.html: |
+    <html>
+    <body>
+      <h1>Hello from Pod: $(HOSTNAME)</h1>
+    </body>
+    </html>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html-config
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+      volumes:
+      - name: html-config
+        configMap:
+          name: nginx-html
+
+# To create the configmap from the file:
+# kubectl apply -f 09.configmap.yaml
+#
+# To create a configmap imperatively from literal values:
+# kubectl create configmap nginx-config --from-literal=app.name=myapp --from-literal=app.environment=development
+#
+# To create a configmap from a file:
+# kubectl create configmap nginx-config --from-file=nginx.conf
+#
+# To list all configmaps:
+# kubectl get configmaps
+#
+# To get detailed information about the configmap:
+# kubectl describe configmap nginx-config
+#
+# To delete the configmap:
+# kubectl delete configmap nginx-config
+#
+# To get configmap in yaml format:
+# kubectl get configmap nginx-config -o yaml
+#
+# To edit the configmap:
+# kubectl edit configmap nginx-config
+#
+# To view the values in the configmap:
+# kubectl get configmap nginx-config -o jsonpath='{.data}'
+#
+# To create configmap from multiple files in a directory:
+# kubectl create configmap nginx-config --from-file=/path/to/config/dir
