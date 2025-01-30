@@ -6,9 +6,23 @@ data:
   index.html: |
     <html>
     <body>
-      <h1>Hello from Pod: $(HOSTNAME)</h1>
+      <h1>Hello from Pod</h1>
     </body>
     </html>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  # Key-value pairs
+  APP_COLOR: "blue"
+  APP_MODE: "production"
+
+  # Multi-line data
+  greetings.txt: |
+    Hello, World!
+    Welcome to Kubernetes ConfigMap.
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -29,26 +43,44 @@ spec:
         image: nginx
         ports:
         - containerPort: 80
+        resources: {}
         volumeMounts:
         - name: html-config
           mountPath: /usr/share/nginx/html/index.html
           subPath: index.html
+      - name: app-container
+        image: busybox
+        command: ["sh", "-c", "echo APP_COLOR: $APP_COLOR, APP_MODE: $APP_MODE && cat /etc/config/greetings.txt && sleep 3600"]
         env:
         - name: HOSTNAME
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "250m"
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
+        - name: APP_COLOR
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: APP_COLOR
+        - name: APP_MODE
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: APP_MODE
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+        resources: {}
       volumes:
       - name: html-config
         configMap:
           name: nginx-html
+      - name: config-volume
+        configMap:
+          name: app-config
+          items:
+          - key: greetings.txt
+            path: greetings.txt
+
 
 # To create the configmap from the file:
 # kubectl apply -f 09.configmap.yaml
@@ -79,3 +111,5 @@ spec:
 #
 # To create configmap from multiple files in a directory:
 # kubectl create configmap nginx-config --from-file=/path/to/config/dir
+#
+# check the subPath in the volumeMounts of the nginx container. which is not used in the app-container. then in app-container, /etc/config is the folder. and the greetings.txt file is mounted in that folder.
