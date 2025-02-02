@@ -1,0 +1,372 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  labels:
+    app: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx-external
+  rules:
+  - host: nginx.onprem.kuberise.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 80
+  # tls:
+  # - hosts:
+  #   - nginx.onprem.kuberise.dev
+  #   secretName: tls-secret
+  # # if you want to use tls, you need to create a secret containing the certificate and key
+  # # here, we use a default certificate by ingress controller because all ingresses uses the same domain
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+# Path-based Routing
+# Scenario: Route different paths to different services
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: path-based-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx-external
+  rules:
+  - host: app.onprem.kuberise.dev
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: api-service
+            port:
+              number: 8080
+      - path: /admin
+        pathType: Prefix
+        backend:
+          service:
+            name: admin-service
+            port:
+              number: 8081
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 80
+
+---
+# Name-based Virtual Hosting
+# Scenario: Route traffic based on different hostnames
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: name-based-ingress
+spec:
+  ingressClassName: nginx-external
+  rules:
+  - host: api.onprem.kuberise.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-service
+            port:
+              number: 8080
+  - host: admin.onprem.kuberise.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: admin-service
+            port:
+              number: 8081
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-app-canary-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/canary: "true"        # Enable canary
+    nginx.ingress.kubernetes.io/canary-weight: "10"   # 10% traffic to canary
+spec:
+  ingressClassName: nginx-external
+  rules:
+  - host: api.onprem.kuberise.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-service-v2                       # Canary version service
+            port:
+              number: 8080
+---
+# To create the ingress from the file:
+# kubectl apply -f 18.ingress.yaml
+#
+# To create an ingress imperatively:
+# kubectl create ingress nginx-ingress --rule="example.com/*=nginx-service:80"
+#
+# To list all ingresses:
+# kubectl get ingress
+#
+# To get detailed information about the ingress:
+# kubectl describe ingress nginx-ingress
+#
+# To delete the ingress:
+# kubectl delete ingress nginx-ingress
+#
+# To edit the ingress:
+# kubectl edit ingress nginx-ingress
+#
+# To get ingress status with more details:
+# kubectl get ingress nginx-ingress -o wide
+#
+# To check ingress class:
+# kubectl get ingressclass
+
+
+
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: nginx
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          echo "<html><body><h1>Hello from API</h1></body></html>" > /usr/share/nginx/html/index.html &&
+          nginx -g "daemon off;"
+      volumes:
+      - name: html-volume
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+spec:
+  type: ClusterIP
+  selector:
+    app: api
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin
+  template:
+    metadata:
+      labels:
+        app: admin
+    spec:
+      containers:
+      - name: admin
+        image: nginx
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          echo "<html><body><h1>This is Admin Dashboard</h1></body></html>" > /usr/share/nginx/html/index.html &&
+          nginx -g "daemon off;"
+      volumes:
+      - name: html-volume
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-service
+spec:
+  type: ClusterIP
+  selector:
+    app: admin
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-service-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apiv2
+  template:
+    metadata:
+      labels:
+        app: apiv2
+    spec:
+      containers:
+      - name: api
+        image: nginx
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          echo "<html><body><h1>Hello from API Version 2</h1></body></html>" > /usr/share/nginx/html/index.html &&
+          nginx -g "daemon off;"
+      volumes:
+      - name: html-volume
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service-v2
+spec:
+  type: ClusterIP
+  selector:
+    app: apiv2
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
+---
+# Rate limit
+# ref: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#rate-limiting
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress-slow
+  labels:
+    app: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/limit-rps: "1"
+spec:
+  ingressClassName: nginx-external
+  rules:
+  - host: slow.onprem.kuberise.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 80
