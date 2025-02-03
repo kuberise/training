@@ -125,3 +125,27 @@ spec:
         resources:
           requests:
             storage: 1Gi
+
+# See how the pods are named and how they are created in order
+# Increase the replicas to 8
+# Decrease the replicas to 3 and see how the pods are deleted in order from the last one
+# Restart one of the pods and see how it is recreated with the same name
+# check the pvc's that there are one pvc for each pod
+# check the logs of master and slave pods
+# connect to the master and read replicas using pgadmin and these addresses:
+# master: postgresql-0.postgresql.kuberise.svc.cluster.local
+# replica: postgresql-1.postgresql.kuberise.svc.cluster.local
+# create a sample table in the master using this command:
+
+# CREATE TABLE my_table (
+#     id SERIAL PRIMARY KEY,
+#     name VARCHAR(100)
+# );
+
+# -- Insert three entries into the table
+# INSERT INTO my_table (name) VALUES
+# ('Alice'),
+# ('Bob'),
+# ('Charlie');
+
+# check that the table is replicated in the replicas
