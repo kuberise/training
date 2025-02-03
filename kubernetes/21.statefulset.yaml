@@ -49,23 +49,41 @@ spec:
               name: postgresql
           env:
             - name: POSTGRES_USER
-              value: myuser
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secrets
+                  key: username
             - name: POSTGRES_PASSWORD
-              value: mypassword
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secrets
+                  key: password
             - name: POSTGRES_DB
               value: mydatabase
             # Replication Configuration
             - name: POSTGRESQL_REPLICATION_MODE  # This will be overwritten by command
               value: master
             - name: POSTGRESQL_REPLICATION_USER
-              value: replicator
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secrets
+                  key: replication-user
             - name: POSTGRESQL_REPLICATION_PASSWORD
-              value: replicator_password
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secrets
+                  key: replication-password
             # Additional required settings
             - name: POSTGRESQL_PASSWORD
-              value: mypassword
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secrets
+                  key: password
             - name: POSTGRESQL_USERNAME
-              value: myuser
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-secrets
+                  key: username
             - name: POSTGRESQL_DATABASE
               value: mydatabase
           command:
@@ -76,14 +94,14 @@ spec:
               if [ "$ORDINAL" = "0" ]; then
                 echo "Starting as master"
                 export POSTGRESQL_REPLICATION_MODE=master
-                export POSTGRESQL_REPLICATION_USER=replicator
-                export POSTGRESQL_REPLICATION_PASSWORD=replicator_password
+                export POSTGRESQL_REPLICATION_USER=$(cat /opt/bitnami/postgresql/secrets/replication-user)
+                export POSTGRESQL_REPLICATION_PASSWORD=$(cat /opt/bitnami/postgresql/secrets/replication-password)
               else
                 echo "Starting as replica"
                 export POSTGRESQL_REPLICATION_MODE=slave
                 export POSTGRESQL_MASTER_HOST=postgresql-0.postgresql
                 export POSTGRESQL_MASTER_PORT_NUMBER=5432
-                until pg_isready -h postgresql-0.postgresql -U replicator -d mydatabase --timeout=2; do
+                until pg_isready -h postgresql-0.postgresql -U $(cat /opt/bitnami/postgresql/secrets/replication-user) -d mydatabase --timeout=2; do
                   echo "Waiting for master at postgresql-0.postgresql:5432"
                   sleep 2
                 done
@@ -92,6 +110,13 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /bitnami/postgresql
+            - name: secrets
+              mountPath: /opt/bitnami/postgresql/secrets
+              readOnly: true
+      volumes:
+        - name: secrets
+          secret:
+            secretName: postgresql-secrets
   volumeClaimTemplates:
     - metadata:
         name: data
