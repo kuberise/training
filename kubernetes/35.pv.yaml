@@ -1,0 +1,116 @@
+# 1. Local Path PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/data
+---
+# 2. NFS PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
+  nfs:
+    server: nfs-server.example.com
+    path: /exported/path
+---
+# 3. iSCSI PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: iscsi-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  iscsi:
+    targetPortal: 10.0.0.1:3260
+    iqn: iqn.2016-04.example.com:storage.target
+    lun: 0
+    fsType: ext4
+---
+# 4. CephFS PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: cephfs-pv
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  cephfs:
+    monitors:
+      - 10.0.0.1:6789
+      - 10.0.0.2:6789
+    user: admin
+    secretRef:
+      name: ceph-secret
+    readOnly: false
+---
+# Example PVC to use label selector to bind to a PV with label
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-with-selector
+spec:
+  selector:
+    matchLabels:
+      type: local-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# Example PVC to use volumeName to bind to a specific PV
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-with-volumename
+spec:
+  volumeName: specific-pv
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+# Pod to use the example PVC
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pvc-pod
+spec:
+  containers:
+  - name: pvc-container
+    image: nginx
+    resources: {}
+    volumeMounts:
+    - mountPath: /usr/share/nginx/html
+      name: pvc-storage
+  volumes:
+  - name: pvc-storage
+    persistentVolumeClaim:
+      claimName: example-pvc
+
+
+# Each time you need a new volume, you need to ask for it from the storage admin.
+# The admin will create a PV and then you can create a PVC to bind to the PV.
+# Then you use that PVC in you pod volumes.

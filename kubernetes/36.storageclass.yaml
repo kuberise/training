@@ -1,0 +1,60 @@
+---
+# StorageClass example
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast-storage
+provisioner: kubernetes.io/aws-ebs  # Example using AWS EBS
+parameters:
+  type: gp2
+  fsType: ext4
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+
+---
+# PersistentVolumeClaim example
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: fast-storage
+  resources:
+    requests:
+      storage: 1Gi
+---
+# PersistentVolumeClaim example
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: standard-storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+# With StorageClass, you can dynamically provision PersistentVolumes.
+# You don't need to ask the admin each time.
+# The admin creates some StorageClasses for different types of storage.
+# You create a PVC with the StorageClass you want,
+# and then the storage driver will create the PV for you.
+
+# look at the storageclasses in the cluster and if they are default or not
+# check the storageclass in minikube and some pv and who created those pv
+
+
+
+---
+# Resource quota for specific storage class
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: storage-quota
+spec:
+  hard:
+    ssd.storageclass.storage.k8s.io/requests.storage: 500Gi
+    standard.storageclass.storage.k8s.io/requests.storage: 1Ti
