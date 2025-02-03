@@ -1,0 +1,157 @@
+# 1. Simple Data Processing Job
+# This job processes a batch of data and exits upon completion
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-processor
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 3
+  template:
+    spec:
+      containers:
+      - name: data-processor
+        image: data-processor:v1
+        resources: {}
+
+---
+# 2. Parallel Data Processing Job
+# This job demonstrates parallel processing with multiple completions
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: parallel-processor
+spec:
+  completions: 5          # Total number of successful pod completions
+  parallelism: 2          # Number of pods that can run in parallel
+  backoffLimit: 6         # Number of retries before marking job as failed
+  template:
+    spec:
+      containers:
+      - name: processor
+        image: parallel-processor:v1
+        env:
+        - name: JOB_INDEX
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.annotations['batch.kubernetes.io/job-completion-index']
+        - name: BATCH_SIZE
+          value: "1000"
+        resources: {}
+      restartPolicy: Never
+
+---
+# 3. Database Migration Job
+# This job performs a one-time database migration
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migration
+  namespace: database
+spec:
+  backoffLimit: 1        # Limited retries for database migrations
+  template:
+    spec:
+      containers:
+      - name: db-migration
+        image: db-migration:v1
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: host
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-creds
+              key: password
+        resources: {}
+        command: ["./migrate.sh"]
+      initContainers:
+      - name: check-db-ready
+        image: postgres:13
+        command: ['sh', '-c',
+          'until pg_isready -h $DB_HOST -p 5432; do echo waiting for database; sleep 2; done;']
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: host
+      restartPolicy: Never
+
+---
+# 4. Cleanup Job with Deadline
+# This job performs cleanup tasks with a time limit
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cleanup-job
+  namespace: maintenance
+spec:
+  activeDeadlineSeconds: 3600  # Job must complete within 1 hour
+  backoffLimit: 2
+  template:
+    spec:
+      containers:
+      - name: cleanup
+        image: cleanup-tool:v1
+        resources: {}
+        volumeMounts:
+        - name: cleanup-volume
+          mountPath: /workspace
+        env:
+        - name: CLEANUP_PATH
+          value: "/workspace/old-data"
+        - name: DRY_RUN
+          value: "false"
+      volumes:
+      - name: cleanup-volume
+        persistentVolumeClaim:
+          claimName: cleanup-pvc
+      restartPolicy: Never
+
+---
+# 5. Job with Dependencies (using initContainers)
+# This job ensures prerequisites are met before starting the main task
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-analysis
+  namespace: analytics
+spec:
+  backoffLimit: 4
+  template:
+    spec:
+      initContainers:
+      - name: fetch-data
+        image: data-fetcher:v1
+        command: ['sh', '-c', 'wget $DATA_URL -O /shared/input-data.csv']
+        env:
+        - name: DATA_URL
+          valueFrom:
+            configMapKeyRef:
+              name: analysis-config
+              key: source_url
+        volumeMounts:
+        - name: shared-data
+          mountPath: /shared
+      - name: validate-data
+        image: data-validator:v1
+        command: ['python', '/scripts/validate.py', '/shared/input-data.csv']
+        volumeMounts:
+        - name: shared-data
+          mountPath: /shared
+      containers:
+      - name: analyzer
+        image: data-analyzer:v1
+        volumeMounts:
+        - name: shared-data
+          mountPath: /shared
+        resources: {}
+      volumes:
+      - name: shared-data
+        emptyDir: {}
+      restartPolicy: Never

@@ -1,0 +1,72 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-cronjob
+  labels:
+    app: backup
+spec:
+  schedule: "*/1 * * * *"  # Run every 10 seconds
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: backup
+        spec:
+          containers:
+          - name: backup
+            image: busybox:latest
+            command: ["/bin/sh", "-c", "echo Starting backup; date; sleep 10; echo Backup completed"]
+            resources: {}
+          restartPolicy: OnFailure
+
+
+#  ┌───────────── minute (0 - 59)
+#  │ ┌───────────── hour (0 - 23)
+#  │ │ ┌───────────── day of the month (1 - 31)
+#  │ │ │ ┌───────────── month (1 - 12)
+#  │ │ │ │ ┌───────────── day of the week (0 - 6) (Sunday to Saturday)
+#  │ │ │ │ │
+#  * * * * *
+
+# To create the cronjob from the file:
+# kubectl apply -f 30.cronjob.yaml
+#
+# To create a cronjob imperatively:
+# kubectl create cronjob backup-cronjob --image=backup-tool:latest --schedule="0 2 * * *"
+#
+# To list all cronjobs:
+# kubectl get cronjobs
+#
+# To get detailed information about the cronjob:
+# kubectl describe cronjob backup-cronjob
+#
+# To delete the cronjob:
+# kubectl delete cronjob backup-cronjob
+#
+# To get cronjob in yaml format:
+# kubectl get cronjob backup-cronjob -o yaml
+#
+# To edit the cronjob:
+# kubectl edit cronjob backup-cronjob
+#
+# To manually trigger a job from cronjob:
+# kubectl create job manual-backup --from=cronjob/backup-cronjob
+#
+# To suspend a cronjob:
+# kubectl patch cronjob backup-cronjob -p '{"spec":{"suspend":true}}'
+#
+# To resume a suspended cronjob:
+# kubectl patch cronjob backup-cronjob -p '{"spec":{"suspend":false}}'
+#
+# To view the last scheduled job:
+# kubectl get jobs --selector=job-name=backup-cronjob
+#
+# To check cronjob status:
+# kubectl get cronjob backup-cronjob -o wide
+#
+# To view completed jobs from this cronjob:
+# kubectl get jobs --selector=job-name=backup-cronjob-*

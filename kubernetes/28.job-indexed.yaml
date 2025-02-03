@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: parallel-logger
+spec:
+  completions: 20
+  parallelism: 3
+  completionMode: Indexed    # Add this to enable indexed completion
+  backoffLimit: 6
+  template:
+    spec:
+      containers:
+      - name: logger
+        image: busybox:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Starting pod with index: $JOB_COMPLETION_INDEX"
+          echo "Pod $JOB_COMPLETION_INDEX is processing at $(date)"
+          # Simulate some work
+          sleep 10
+          echo "Pod $JOB_COMPLETION_INDEX completed at $(date)"
+        env:
+        - name: JOB_COMPLETION_INDEX
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.annotations['batch.kubernetes.io/job-completion-index']
+      restartPolicy: Never
