@@ -149,3 +149,103 @@ spec:
 # ('Charlie');
 
 # check that the table is replicated in the replicas
+
+
+
+
+
+---
+# Network Security Policies
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: postgresql-network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: postgresql  # Matches your PostgreSQL pods
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow traffic between PostgreSQL pods for replication
+    - from:
+        - podSelector:
+            matchLabels:
+              app: postgresql
+      ports:
+        - protocol: TCP
+          port: 5432
+    # # Allow traffic from application pods (adjust labels as needed)
+    - ports:
+        - protocol: TCP
+          port: 5432
+      # # Define more specific rules for the source (namespace and pod labels)
+      # from:
+      #   - podSelector:
+      #       matchLabels:
+      #         role: application
+      #   - namespaceSelector:
+      #       matchLabels:
+      #         type: application
+  egress:
+    # Allow DNS resolution
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+        - podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Allow traffic between PostgreSQL pods for replication
+    - to:
+        - podSelector:
+            matchLabels:
+              app: postgresql
+      ports:
+        - protocol: TCP
+          port: 5432
+---
+# Default deny policy for the namespace (above policies are only for PostgreSQL pods and application pods, and default deny is for all other pods)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+spec:
+  podSelector: {}  # Applies to all pods in the namespace
+  policyTypes:
+    - Ingress
+    - Egress
+
+
+# apply deny all and then look at the logs of read replica pods. They can not communicate with the master node anymore.
+# also check pgadmin and refresh databases and see that they can not connect to the database anymore
+# then add postgresql network policies and check the logs and pgadmin again
+
+
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: postgresql-pdb
+spec:
+  maxUnavailable: 1  # Only one pod can be unavailable at a time
+  selector:
+    matchLabels:
+      app: postgresql
+
+# because the identity of the pods are important and unique in statefulset, if you drain the node,
+# in the worse case scenario, all primary and replica pods will be terminated together and then recreated together in another node.
+# it is different with deployment
+# By PDB you make sure that only one pod is terminated at a time.
+# all read replica will be terminated and reschedule first
+# then the primary pod will be terminated and rescheduled
+# during primary pod unavailability, all write operations fail.
+# only read operations work from replicas.
+# applications need to handle this temporary write unavailability.
