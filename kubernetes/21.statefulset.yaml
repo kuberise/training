@@ -21,9 +21,9 @@ metadata:
   name: postgresql-secrets
 type: Opaque
 data:
-  username: bXl1c2Vy  # base64 encoded 'myuser'
-  password: bXlwYXNzd29yZA==  # base64 encoded 'mypassword'
-  replication-user: cmVwbGljYXRvcg==  # base64 encoded 'replicator'
+  username: bXl1c2Vy                                  # base64 encoded 'myuser'
+  password: bXlwYXNzd29yZA==                          # base64 encoded 'mypassword'
+  replication-user: cmVwbGljYXRvcg==                  # base64 encoded 'replicator'
   replication-password: cmVwbGljYXRvcl9wYXNzd29yZA==  # base64 encoded 'replicator_password'
 ---
 apiVersion: apps/v1
