@@ -1,15 +1,15 @@
 ---
-# # Example 1: Creating a Namespace
-# apiVersion: v1
-# kind: Namespace
-# metadata:
-#   name: development
-#   labels:
-#     environment: dev
-#     team: backend
-#   annotations:
-#     description: "Namespace for development environment"
-#     contact: "dev-team@example.com"
+# Example 1: Creating a Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: development
+  labels:
+    environment: dev
+    team: backend
+  annotations:
+    description: "Namespace for development environment"
+    contact: "dev-team@example.com"
 
 ---
 # Example 2: Resource Quota for a Namespace

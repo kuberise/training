@@ -134,7 +134,7 @@ metadata:
   name: my-app-canary-ingress
   annotations:
     nginx.ingress.kubernetes.io/canary: "true"        # Enable canary
-    nginx.ingress.kubernetes.io/canary-weight: "10"   # 10% traffic to canary
+    nginx.ingress.kubernetes.io/canary-weight: "20"   # 10% traffic to canary
 spec:
   ingressClassName: nginx-external
   rules:

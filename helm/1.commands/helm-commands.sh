@@ -51,3 +51,4 @@ helm show chart oci://registry-1.docker.io/bitnamicharts/nginx
 helm show values oci://registry-1.docker.io/bitnamicharts/nginx
 helm pull oci://registry-1.docker.io/bitnamicharts/nginx
 helm install nginx oci://registry-1.docker.io/bitnamicharts/nginx
+helm template nginx oci://registry-1.docker.io/bitnamicharts/nginx
