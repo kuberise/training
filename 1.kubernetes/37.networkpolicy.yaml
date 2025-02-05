@@ -46,6 +46,7 @@ spec:
   policyTypes:
   - Ingress
   - Egress
+# for example this is a pod works only with volumes and no traffic is needed.
 ---
 # Explicitly allow all ingress traffic
 # With this policy in place, no additional policy can block any incoming traffic

@@ -27,3 +27,6 @@
 
 ## In nginx ingress controller how to route traffic based on the content of the request, body or header?
   - Ingress controllers are designed to route traffic based on the host, path, or other request attributes, such as headers or query parameters. and they typically do not inspect the content of the request body itself.
+
+## Network policy: only report or give warning without blocking
+  No, Kubernetes NetworkPolicies do not have a built-in "warning mode" because they enforce actual network rules at the CNI (Container Network Interface) level. They either allow or deny traffic, with no option to "log and allow."

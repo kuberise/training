@@ -1,3 +1,4 @@
+# Question: how the pods can reach eachothers.
 ---
 apiVersion: v1
 kind: Service
@@ -180,14 +181,14 @@ spec:
     - ports:
         - protocol: TCP
           port: 5432
-      # # Define more specific rules for the source (namespace and pod labels)
-      # from:
-      #   - podSelector:
-      #       matchLabels:
-      #         role: application
-      #   - namespaceSelector:
-      #       matchLabels:
-      #         type: application
+      # Define more specific rules for the source (namespace and pod labels)
+      from:
+        - podSelector:
+            matchLabels:
+              role: application
+        - namespaceSelector:
+            matchLabels:
+              type: application
   egress:
     # Allow DNS resolution
     - to:

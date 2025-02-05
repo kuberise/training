@@ -74,3 +74,5 @@ spec:
             name: content-aggregator
             port:
               number: 80
+
+# delete the pod and see that the content is deleted.
