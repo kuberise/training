@@ -1,0 +1,35 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Reference base directory
+resources:
+- ../../base
+
+# Add name prefix to all resources
+namePrefix: dev-
+
+
+# Generate ConfigMap from files
+configMapGenerator:
+- files:
+  - config.properties
+  name: app-config
+
+# Patch deployment
+patches:
+- patch: |-
+    - op: replace
+      path: /spec/replicas
+      value: 1
+    - op: add
+      path: /spec/template/spec/containers/0/env
+      value:
+      - name: ENVIRONMENT
+        value: development
+  target:
+    kind: Deployment
+    name: simple-app
+labels:
+- includeSelectors: true
+  pairs:
+    environment: development
