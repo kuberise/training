@@ -15,6 +15,9 @@ spec:
     name: postgresql
   selector:
     app: postgresql
+# Primary pod: postgresql-0.postgresql.kuberise.svc.cluster.local
+# Replica pod: postgresql-1.postgresql.kuberise.svc.cluster.local
+# Replica pod: postgresql-2.postgresql.kuberise.svc.cluster.local
 ---
 apiVersion: v1
 kind: Secret
