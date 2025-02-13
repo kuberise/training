@@ -64,8 +64,12 @@ roleRef:
 # List of all verbs
 # k api-resources -o wide
 #
+# Check current user and its groups:
+# k auth whoami
+#
 # Check permissions:
 # kubectl auth can-i create pods --as=system:serviceaccount:default:app-service-account
+# kubectl auth can-i create roles --as=system:serviceaccount:default:app-service-account
 #
 # Common RBAC patterns:
 #
