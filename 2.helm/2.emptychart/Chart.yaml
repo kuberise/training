@@ -1,2 +1,3 @@
+apiVersion: v2
 name: simplechart
 version: 0.0.1

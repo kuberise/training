@@ -117,3 +117,5 @@ spec:
  minReplicas: 2
  maxReplicas: 10
  targetCPUUtilizationPercentage: 50
+
+# try to generate some fake traffic using command `hey -z 5m https://hpa.onprem.kuberise.dev/`

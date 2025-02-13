@@ -1,9 +1,7 @@
-# configmap.yaml - This ConfigMap holds configuration data for the application
-apiVersion: v1  # API version for Kubernetes ConfigMaps
-kind: ConfigMap  # Kind type declaration
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: sample-config  # Unique name for the ConfigMap
+  name: sample-config
 data:
-  # Key-value pairs for configuration settings
-  APP_ENV: "development"  # Application environment hinting at development
-  LOG_LEVEL: "debug"      # Logging level set to debug for development purposes
+  APP_ENV: "development"
+  LOG_LEVEL: "debug"
