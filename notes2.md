@@ -22,3 +22,10 @@ basic gitops repository
 tools:
 git
 docker
+
+kubernetes cluster architecture
+which architecture you are using?
+is it onprem or managed kubernets
+how .kube/config file works
+how KUBECONFIG works
+how to work with multiple cluster together or separately in different files
