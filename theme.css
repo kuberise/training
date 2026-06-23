@@ -1,0 +1,268 @@
+/* @theme xebia */
+
+@import 'default';
+
+:root {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
+
+section:not(.invert), section:not(.invert).title::before {
+    color: black;
+    background: white;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTUuNzQ3IiBoZWlnaHQ9IjY1IiBmaWxsPSJub25lIiBjbGFzcz0iYmxvY2sgdy1mdWxsIj48cGF0aCBmaWxsPSIjMDAwIiBkPSJNNTAuNDAzIDIyLjczNGMzLjM3OSAwIDYuNTEyIDEuNzI2IDguNjE5IDQuNTQ1IDEuMjM0IDEuODAzIDEuODQyIDMuOTMyIDEuODQyIDYuNTh2MS4wMTZoLTE1LjkxYy4yMjggMi44MTkgMi4zMzUgNC42MjIgNS41ODIgNC41MDcgMi4wMTIgMCAzLjc3OC0uODQ0IDQuNzI3LTIuNDc0aDQuOTkyYy0xLjY3IDQuMzcyLTUuMTYzIDYuODQ2LTkuNTY3IDYuODQ2LTIuOTYyIDAtNS40MS0xLjAxNi03LjQ2LTMuMDg3LTEuODYxLTEuOTc2LTIuOTYzLTQuNzItMi45NjMtNy4zNjYgMC0yLjguOTUtNS4yNzQgMi43OTEtNy4yNSAyLjAxMy0yLjEyOCA0LjYzMi0zLjMxNyA3LjM0Ny0zLjMxN20tLjE1MiA0LjI3NmMtMi4zNTQgMC00LjU3NSAxLjYzLTUuMjQgNC4xMDVoMTAuODRjLS43NC0yLjY0Ny0yLjY3Ny00LjEwNS01LjYtNC4xMDVNNjcuODcgMTYuOTAydjguMDM2YzEuNzg1LTEuNDU3IDMuNzQtMi4wMzMgNi4xNS0xLjk3NSAyLjYyIDAgNS4wMTMuODQzIDYuODU0IDIuNjQ2IDIuMjIxIDEuOTc2IDMuMzk4IDQuODkgMy4zOTggNy44MDcgMCAzLjE2NC0xLjMyOSA2LjEzNi0zLjcyIDguMjA4LTEuNzg1IDEuNDU3LTMuOTY4IDIuMy02LjUxMiAyLjMtMi4zMzUgMC00LjMyOC0uNjctNi4xNy0yLjEyOHYxLjYzaC00LjU1N1YxNi45MDN6bTUuODQ3IDEwLjU4N2MtMy4yMjcgMC01LjY3NiAyLjU3LTUuNjc2IDYuMDA0IDAgMy4yNiAyLjU2MyA1LjgzIDUuNDMgNS44MSAzLjU2OSAwIDYuMDE3LTIuNTkgNi4wMTctNS45MDcgMC0zLjE2NC0yLjU0NC01LjkwNy01Ljc3MS01LjkwN20xOC4xMyAxNS45MzhoLTQuNDA1VjIzLjQyNGg0LjQwNXptMC0yMi4wNzZoLTQuNDA1VjE2LjloNC40MDV6bTEzLjIxMSAxLjU1NWMyLjg4NiAwIDQuOTM2Ljk0IDYuMjg0IDIuOTE1di0yLjM5N2g0LjQwNXYyMC4wMDNoLTQuNDI0di0yLjQ3M2MtMS4xMDEgMi4wNy0zLjExNCAyLjkxNS02LjE3IDIuOTE1LTUuODI4IDAtMTAuMjMyLTQuNTA3LTEwLjIzMy0xMC41MSAwLTIuODIuOTUtNS4zOSAyLjc5MS03LjM2NSAyLjAxMy0yLjEzIDQuMzg2LTMuMDg4IDcuMzQ3LTMuMDg4bS4xOSA0LjUwN2MtMy4xMzMgMC01LjY3NyAyLjQ3NS01LjY3NyA1LjczNSAwIDMuNTI5IDIuNjIgNi4wMDMgNS43NTMgNi4wMDMgMi44ODUgMCA1LjUwNC0yLjY0NyA1LjUwNS01LjczNCAwLTMuNDMzLTIuNjk2LTYuMDA0LTUuNTgxLTYuMDA0Ii8+PHBhdGggZmlsbD0iIzAwMCIgZD0iTS4xNyA1MS45ODZoMTIuMDJsMTMuMDAzLTEzLjA3NyAxMi45NjUgMTMuMDc1aDEyLjE3MUwzMS4yNzkgMzIuNzdsMTkuMjItMTkuMzY4SDM4LjMyOEwyNS4xOTMgMjYuNjdsLTEzLjA2LTEzLjI2OEgwTDE5LjEwNyAzMi43N3oiLz48L3N2Zz4K');
+    background-repeat: no-repeat;
+    background-position: top 21px right 50px;
+    background-size: auto 50px;
+    padding: 0 50px 90px 50px;
+    font-size: 24px;
+}
+
+section, section.title::before {
+    color: white;
+    background: #140025;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTUuNzQ3IiBoZWlnaHQ9IjY1IiBmaWxsPSJub25lIiBjbGFzcz0iYmxvY2sgdy1mdWxsIj48cGF0aCBmaWxsPSIjZmZmIiBkPSJNNTAuNDAzIDIyLjczNGMzLjM3OSAwIDYuNTEyIDEuNzI2IDguNjE5IDQuNTQ1IDEuMjM0IDEuODAzIDEuODQyIDMuOTMyIDEuODQyIDYuNTh2MS4wMTZoLTE1LjkxYy4yMjggMi44MTkgMi4zMzUgNC42MjIgNS41ODIgNC41MDcgMi4wMTIgMCAzLjc3OC0uODQ0IDQuNzI3LTIuNDc0aDQuOTkyYy0xLjY3IDQuMzcyLTUuMTYzIDYuODQ2LTkuNTY3IDYuODQ2LTIuOTYyIDAtNS40MS0xLjAxNi03LjQ2LTMuMDg3LTEuODYxLTEuOTc2LTIuOTYzLTQuNzItMi45NjMtNy4zNjYgMC0yLjguOTUtNS4yNzQgMi43OTEtNy4yNSAyLjAxMy0yLjEyOCA0LjYzMi0zLjMxNyA3LjM0Ny0zLjMxN20tLjE1MiA0LjI3NmMtMi4zNTQgMC00LjU3NSAxLjYzLTUuMjQgNC4xMDVoMTAuODRjLS43NC0yLjY0Ny0yLjY3Ny00LjEwNS01LjYtNC4xMDVNNjcuODcgMTYuOTAydjguMDM2YzEuNzg1LTEuNDU3IDMuNzQtMi4wMzMgNi4xNS0xLjk3NSAyLjYyIDAgNS4wMTMuODQzIDYuODU0IDIuNjQ2IDIuMjIxIDEuOTc2IDMuMzk4IDQuODkgMy4zOTggNy44MDcgMCAzLjE2NC0xLjMyOSA2LjEzNi0zLjcyIDguMjA4LTEuNzg1IDEuNDU3LTMuOTY4IDIuMy02LjUxMiAyLjMtMi4zMzUgMC00LjMyOC0uNjctNi4xNy0yLjEyOHYxLjYzaC00LjU1N1YxNi45MDN6bTUuODQ3IDEwLjU4N2MtMy4yMjcgMC01LjY3NiAyLjU3LTUuNjc2IDYuMDA0IDAgMy4yNiAyLjU2MyA1LjgzIDUuNDMgNS44MSAzLjU2OSAwIDYuMDE3LTIuNTkgNi4wMTctNS45MDcgMC0zLjE2NC0yLjU0NC01LjkwNy01Ljc3MS01LjkwN20xOC4xMyAxNS45MzhoLTQuNDA1VjIzLjQyNGg0LjQwNXptMC0yMi4wNzZoLTQuNDA1VjE2LjloNC40MDV6bTEzLjIxMSAxLjU1NWMyLjg4NiAwIDQuOTM2Ljk0IDYuMjg0IDIuOTE1di0yLjM5N2g0LjQwNXYyMC4wMDNoLTQuNDI0di0yLjQ3M2MtMS4xMDEgMi4wNy0zLjExNCAyLjkxNS02LjE3IDIuOTE1LTUuODI4IDAtMTAuMjMyLTQuNTA3LTEwLjIzMy0xMC41MSAwLTIuODIuOTUtNS4zOSAyLjc5MS03LjM2NSAyLjAxMy0yLjEzIDQuMzg2LTMuMDg4IDcuMzQ3LTMuMDg4bS4xOSA0LjUwN2MtMy4xMzMgMC01LjY3NyAyLjQ3NS01LjY3NyA1LjczNSAwIDMuNTI5IDIuNjIgNi4wMDMgNS43NTMgNi4wMDMgMi44ODUgMCA1LjUwNC0yLjY0NyA1LjUwNS01LjczNCAwLTMuNDMzLTIuNjk2LTYuMDA0LTUuNTgxLTYuMDA0Ii8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTS4xNyA1MS45ODZoMTIuMDJsMTMuMDAzLTEzLjA3NyAxMi45NjUgMTMuMDc1aDEyLjE3MUwzMS4yNzkgMzIuNzdsMTkuMjItMTkuMzY4SDM4LjMyOEwyNS4xOTMgMjYuNjdsLTEzLjA2LTEzLjI2OEgwTDE5LjEwNyAzMi43N3oiLz48L3N2Zz4=');
+    background-repeat: no-repeat;
+    background-position: top 21px right 50px;
+    background-size: auto 50px;
+    padding: 0 50px 90px 50px;
+    font-size: 24px;
+}
+
+/* title slide */
+
+section.title:not(.invert)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.75);
+    background-position: top 21px left 50px;
+    z-index: -1;
+}
+
+section.title::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.75);
+    background-position: top 21px left 50px;
+    z-index: -1;
+}
+
+section.title:has(.invert) h3 {
+    color: #d49ed4;
+}
+
+section.title:not(.invert) h3 {
+    color: #831B84;
+}
+
+section.title {
+    padding-left: 450px;
+    padding-bottom: 50px;
+    background: none;
+}
+section.title p:nth-of-type(1) img {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+    border-radius: 0;
+    transform: none;
+}
+section.title img {
+    border-radius: 100%;
+    position: absolute;
+    left: 75px;
+    top: calc(50% - 15px);
+    transform: translateY(-50%);
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    width: 300px;
+    height: auto;
+}
+
+section.title header {
+    font-style: italic;
+    display: block;
+}
+
+section.title footer {
+    border: none;
+}
+
+section.title::after {
+    display: none;
+}
+
+
+/* other slides */
+
+strong {
+    color: #831B84;
+}
+
+section.invert strong {
+    color: #d49ed4;
+}
+
+h1 {
+    font-size: 60px;
+}
+
+h2 {
+    font-size: 52px;
+}
+
+h1,h2,h3 {
+    color: black;
+    font-weight: normal;
+}
+
+section.invert h1,
+section.invert h2,
+section.invert h3 {
+    color: white;
+}
+
+section h3, section.invert h3 {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+section h3 {
+    color: #831B84;
+}
+
+section.invert h3 {
+    color: #d49ed4;
+}
+
+pre {
+    background: rgba(0, 0, 0, 0.05);
+    border: 0;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.4;
+}
+
+section.invert pre {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+table, tr, td, th {
+    border-color: rgba(0, 0, 0, 0.15)!important;
+}
+
+table tr {
+    background: rgba(0, 0, 0, 0.03)!important;
+}
+
+section.invert :is(table, tr, td, th) {
+    border-color: rgba(255, 255, 255, 0.25)!important;
+}
+
+section.invert table tr {
+    background: rgba(255, 255, 255, 0.05)!important;
+}
+
+section img {
+    position: absolute;
+    top: 50%;
+    right: 50px;
+    width: 450px;
+    height: calc(100% - 70px);
+    object-fit: cover;
+    transform: translateY(-50%);
+    border-radius: 10px;
+}
+
+section:has(img):not(.title) {
+    padding-right: 550px;
+}
+
+section:not(.invert):has(img) {
+    background-image: none;
+}
+
+section.invert:has(img) {
+    background-image: none;
+}
+
+
+section:has(img):not(.title) footer {
+    width: calc(100% - 600px);
+}
+
+section:has(img):not(.title)::after {
+    right: 550px;
+}
+
+
+section::after {
+    content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
+    position: absolute;
+    bottom: 31px;
+    right: 50px;
+    font-size: 16px;
+    color: black;
+}
+
+section.invert::after {
+    color: white;
+}
+
+header {
+    left: auto;
+    right: 50px;
+    color: black;
+    font-size: 16px;
+    top: auto;
+    bottom: 31px;
+    display: none;
+}
+
+section.invert header {
+    color: white;
+}
+
+footer {
+    font-size: 16px;
+    left: 50px;
+    bottom: 31px;
+    color: black;
+    width: calc(100% - 100px);
+    border-top: 1px solid black;
+    padding-top: 10px;
+}
+
+section.invert footer {
+    color: white;
+    border-top-color: white;
+}
+
+/*
+Palette
+
+PrimaryThe primary colours are used for building brand
+recognition, for example, in our logotype, all
+external communications and first contact
+touchpoints.
+
+HEX
+
+#831B84 Velvet
+#561257 Dark Velvet
+#150027 Purple Dark
+#E331D0 Pink
+#FFFFFF White
+#000000 Black
+*/
