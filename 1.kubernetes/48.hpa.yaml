@@ -92,9 +92,9 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: nginx-external
+  ingressClassName: nginx
   rules:
-  - host: hpa.onprem.kuberise.dev
+  - host: hpa.127.0.0.1.nip.io
     http:
       paths:
       - path: /
@@ -118,4 +118,4 @@ spec:
  maxReplicas: 10
  targetCPUUtilizationPercentage: 50
 
-# try to generate some fake traffic using command `hey -z 5m https://hpa.onprem.kuberise.dev/`
+# try to generate some fake traffic using command `hey -z 5m https://hpa.127.0.0.1.nip.io/`

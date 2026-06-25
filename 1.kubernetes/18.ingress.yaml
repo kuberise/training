@@ -7,9 +7,9 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: nginx-external
+  ingressClassName: nginx
   rules:
-  - host: nginx.onprem.kuberise.dev
+  - host: http://nginx.127.0.0.1.nip.io
     http:
       paths:
       - path: /
@@ -21,7 +21,7 @@ spec:
               number: 80
   # tls:
   # - hosts:
-  #   - nginx.onprem.kuberise.dev
+  #   - http://nginx.127.0.0.1.nip.io
   #   secretName: tls-secret
   # # if you want to use tls, you need to create a secret containing the certificate and key
   # # here, we use a default certificate by ingress controller because all ingresses uses the same domain
@@ -69,9 +69,9 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: nginx-external
+  ingressClassName: nginx
   rules:
-  - host: app.onprem.kuberise.dev
+  - host: app.127.0.0.1.nip.io
     http:
       paths:
       - path: /api
@@ -104,9 +104,9 @@ kind: Ingress
 metadata:
   name: name-based-ingress
 spec:
-  ingressClassName: nginx-external
+  ingressClassName: nginx
   rules:
-  - host: api.onprem.kuberise.dev
+  - host: api.127.0.0.1.nip.io
     http:
       paths:
       - path: /
@@ -116,7 +116,7 @@ spec:
             name: api-service
             port:
               number: 8080
-  - host: admin.onprem.kuberise.dev
+  - host: admin.127.0.0.1.nip.io
     http:
       paths:
       - path: /
@@ -136,9 +136,9 @@ metadata:
     nginx.ingress.kubernetes.io/canary: "true"        # Enable canary
     nginx.ingress.kubernetes.io/canary-weight: "20"   # 10% traffic to canary
 spec:
-  ingressClassName: nginx-external
+  ingressClassName: nginx
   rules:
-  - host: api.onprem.kuberise.dev
+  - host: api.127.0.0.1.nip.io
     http:
       paths:
       - path: /
@@ -358,9 +358,9 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/limit-rps: "1"
 spec:
-  ingressClassName: nginx-external
+  ingressClassName: nginx
   rules:
-  - host: slow.onprem.kuberise.dev
+  - host: slow.127.0.0.1.nip.io
     http:
       paths:
       - path: /

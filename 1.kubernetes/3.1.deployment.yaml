@@ -61,9 +61,9 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: nginx-external
+  ingressClassName: nginx
   rules:
-  - host: nginx.onprem.kuberise.dev
+  - host: nginx.127.0.0.1.nip.io
     http:
       paths:
       - path: /
@@ -74,7 +74,7 @@ spec:
             port:
               number: 80
 
-# https://nginx.onprem.kuberise.dev/
+# http://nginx.127.0.0.1.nip.io
 #
 # To create the deployment from the file:
 # kubectl apply -f 3.1.deployment.yaml

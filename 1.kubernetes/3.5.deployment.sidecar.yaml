@@ -24,7 +24,7 @@
     initContainers:
     - name: init-container
       image: busybox
-      command: ["sh", "-c", "echo Initializing... && sleep 5"]
+      command: ["sh", "-c", "echo Initializing... && sleep 7"]
     # nodeSelector:
     #   disktype: ssd
     restartPolicy: Always

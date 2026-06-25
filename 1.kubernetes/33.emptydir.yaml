@@ -62,9 +62,9 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: nginx-external
+  ingressClassName: nginx
   rules:
-  - host: content.onprem.kuberise.dev
+  - host: content.127.0.0.1.nip.io
     http:
       paths:
       - path: /
