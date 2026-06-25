@@ -1,4 +1,4 @@
-### Subject: Preparing for Your Upcoming Platform Engineering & Kubernetes Training
+### Preparing for Your Upcoming Platform Engineering & Kubernetes Training
 
 Dear Participant,
 
