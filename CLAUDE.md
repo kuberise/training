@@ -45,5 +45,10 @@ Participants run everything against a local minikube cluster, so when adding or 
 
 - Never use em dashes (`—`) or en dashes (`–`) in any text. Use commas, semicolons, colons, or separate sentences.
 - In prose (markdown, slide content, comments), one paragraph = one line. Do not soft-wrap sentences with mid-paragraph hard breaks, the editor handles visual wrapping and hard wraps make diffs noisier.
-- For charts, prefer mermaid in ```mermaid``` fenced blocks; for ASCII diagrams use the box-drawing characters (`┌ ┐ └ ┘ ─ │ ├ ┤ ┬ ┴ ┼`).
+- For charts, prefer mermaid in ```mermaid``` fenced blocks. For ASCII diagrams (in slides, notes, or any markdown), **always** use the box-drawing characters below, never `+`, `-`, `|`, `v`, `^` for box edges or connectors. Box-drawing characters render as a single continuous figure in monospace fonts, the ASCII fallbacks leave visible gaps between shapes.
+  - Corners: `┌ ┐ └ ┘`
+  - Lines: `─ │`
+  - T-junctions: `├ ┤ ┬ ┴`
+  - Cross: `┼`
+  - Align corners and junctions vertically/horizontally so connectors actually meet (a `┬` on one line must sit at the same column as the `│` below it, and as the `┴` two lines down).
 - Shell scripts in this repo (e.g. `2.helm/1.commands/helm-commands.sh`) are read aloud as much as executed, keep them commented and runnable from the repo root.
