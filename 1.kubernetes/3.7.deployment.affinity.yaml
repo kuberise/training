@@ -28,6 +28,9 @@ spec:
         - containerPort: 80
         resources: {}
 
+# minikube node add
+# kubectl apply -f https://raw.githubusercontent.com/aojea/kindnet/main/install-kindnet.yaml
+
 # create a minikube cluster with two nodes or more `minikube start -p demo --nodes 2`
 # apply this deployment without affinity and check the pods are scheduled on both nodes
 # apply this deployment with affinity and check the pods are pending because no nodes have the label `gpu`
