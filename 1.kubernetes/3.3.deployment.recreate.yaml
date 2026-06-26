@@ -6,10 +6,10 @@ metadata:
     app: nginx
 spec:
   strategy:
-    type: Recreate
-    # rollingUpdate:
-    #   maxUnavailable: 0
-    #   maxSurge: 1
+    # type: Recreate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   replicas: 6
   selector:
     matchLabels:
