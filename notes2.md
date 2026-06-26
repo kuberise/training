@@ -32,3 +32,9 @@ how to work with multiple cluster together or separately in different files
 
 ---
 create a loadbalancer service and then show that by minikube tunnel it will get an external ip and then using nip.io you can access the service from your ingress/gateway api
+
+---
+check killer koda samples and include the topics
+
+---
+in exam use imparative kubectl commands,
